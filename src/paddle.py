@@ -1,5 +1,5 @@
 import pygame
-from .config import WHITE, CYAN, GRAY, PADDLE_WIDTH, PADDLE_HEIGHT, HEIGHT, SMOOTHING
+from .config import WHITE, CYAN, GRAY, PADDLE_WIDTH, PADDLE_HEIGHT, WIDTH, HEIGHT, SMOOTHING
 from .utils import lerp
 
 class Paddle:
