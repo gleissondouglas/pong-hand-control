@@ -149,7 +149,13 @@ class HandPongGame:
 
         if self.state == PLAYING:
             self.left_paddle.update(y_left)
-            self.right_paddle.update(y_right)
+            
+            # IA / Bot: Se não houver mão direita, o computador assume
+            if y_right is not None:
+                self.right_paddle.update(y_right)
+            else:
+                self.right_paddle.ai_update(self.ball)
+                
             self.ball.update(self.left_paddle, self.right_paddle)
 
             if self.ball.rect.left <= 0:
@@ -222,7 +228,13 @@ class HandPongGame:
                 self.ui.draw_angry_face(self.game_surface, WIDTH // 4, HEIGHT // 2, 40)
         
         self.ui.draw_score(self.game_surface, self.score_left, self.score_right)
-        self.ui.draw_status(self.game_surface, hands)
+        
+        # Prepara o status detalhado para a UI
+        status = {
+            "left": "ACTIVE" if hands and hands.get("left") else "LOST",
+            "right": "ACTIVE" if hands and hands.get("right") else ("BOT" if self.state != MENU else "LOST")
+        }
+        self.ui.draw_status(self.game_surface, status)
 
         if self.state == MENU:
             ui_hands = hands if hands else {"left": None, "right": None}

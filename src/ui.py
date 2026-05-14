@@ -58,25 +58,42 @@ class UI:
         draw_neon_text(str(score_left), WIDTH // 4, 30, GREEN)
         draw_neon_text(str(score_right), 3 * WIDTH // 4, 30, CYAN)
 
-    def draw_status(self, surface, hands):
+    def draw_status(self, surface, status):
         # HUD Holográfico nos cantos
-        h_left = "left" in hands and hands["left"]
-        h_right = "right" in hands and hands["right"]
-        
-        self._draw_hologram(surface, 20, 20, h_left, "P1")
-        self._draw_hologram(surface, WIDTH - 60, 20, h_right, "P2")
+        self._draw_hologram(surface, 20, 20, status["left"], "P1")
+        self._draw_hologram(surface, WIDTH - 80, 20, status["right"], "P2")
 
-    def _draw_hologram(self, surface, x, y, active, label):
-        color = GREEN if active else RED
+    def _draw_hologram(self, surface, x, y, state, label):
+        # Cores baseadas no estado
+        if state == "ACTIVE":
+            color = GREEN
+            msg = "READY"
+        elif state == "BOT":
+            color = (255, 200, 0)
+            msg = "BOT"
+        else: # LOST
+            color = RED
+            msg = "LOST"
+            # Efeito de piscar para o erro
+            if (pygame.time.get_ticks() // 500) % 2 == 0:
+                color = (150, 0, 0)
+        
         # Círculo externo
         pygame.draw.circle(surface, color, (x + 20, y + 20), 18, 2)
-        if active:
-            # Ponto pulsante ou fixo no centro
+        if state != "LOST":
             pygame.draw.circle(surface, color, (x + 20, y + 20), 5)
+        else:
+            # X no centro para sinal perdido
+            pygame.draw.line(surface, color, (x+15, y+15), (x+25, y+25), 2)
+            pygame.draw.line(surface, color, (x+25, y+15), (x+15, y+25), 2)
         
         # Texto do Player
-        txt = self.font_status.render(label, True, color)
-        surface.blit(txt, (x + 20 - txt.get_width() // 2, y + 40))
+        txt_label = self.font_status.render(label, True, color)
+        surface.blit(txt_label, (x + 20 - txt_label.get_width() // 2, y + 40))
+        
+        # Mensagem de status (READY / BOT / LOST)
+        txt_msg = self.font_status.render(msg, True, color)
+        surface.blit(txt_msg, (x + 20 - txt_msg.get_width() // 2, y + 58))
 
     def draw_menu(self, surface):
         overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
