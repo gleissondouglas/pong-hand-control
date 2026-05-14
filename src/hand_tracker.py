@@ -3,16 +3,20 @@ import cv2
 import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
+from .utils import resource_path
 
 class HandTracker:
     def __init__(
         self,
-        model_path="assets/models/hand_landmarker.task",
+        model_path=None,
         max_hands=2,
         detection_confidence=0.7,
         presence_confidence=0.6,
         tracking_confidence=0.6,
     ):
+        if model_path is None:
+            model_path = resource_path("assets/models/hand_landmarker.task")
+            
         base_options = python.BaseOptions(model_asset_path=model_path)
         options = vision.HandLandmarkerOptions(
             base_options=base_options,

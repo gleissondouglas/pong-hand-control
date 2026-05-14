@@ -19,7 +19,7 @@ from src.ui import UI
 from src.fire import FireEffect
 from src.lightning import LightningEffect
 from src.config import WIDTH, HEIGHT, BLACK, FPS, WINNING_SCORE, CALIB_Y_MIN_DEFAULT, CALIB_Y_MAX_DEFAULT
-from src.utils import EffectManager
+from src.utils import EffectManager, resource_path
 
 # Estados do Jogo
 MENU = 0
@@ -31,15 +31,16 @@ CALIBRATION = 4
 class HandPongGame:
     def __init__(self):
         # Verifica se os assets existem
-        if not os.path.exists("assets"):
-            print("Erro: Pasta 'assets' não encontrada.")
+        assets_path = resource_path("assets")
+        if not os.path.exists(assets_path):
+            print(f"Erro: Pasta 'assets' não encontrada em {assets_path}.")
             sys.exit(1)
 
         # Inicializa o Mixer
         try:
             pygame.mixer.init()
-            self.hit_sound = pygame.mixer.Sound("assets/sounds/hit.wav")
-            self.score_sound = pygame.mixer.Sound("assets/sounds/score.wav")
+            self.hit_sound = pygame.mixer.Sound(resource_path("assets/sounds/hit.wav"))
+            self.score_sound = pygame.mixer.Sound(resource_path("assets/sounds/score.wav"))
         except Exception as e:
             print(f"Aviso: Áudio não disponível ({e})")
             self.hit_sound = None

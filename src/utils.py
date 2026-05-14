@@ -1,6 +1,21 @@
 import pygame
 import random
+import os
+import sys
 from .config import CYAN, WHITE
+
+def resource_path(relative_path):
+    """ Retorna o caminho absoluto para o recurso, funciona em dev e PyInstaller """
+    try:
+        # PyInstaller cria uma pasta temporária e armazena o caminho em _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        # Se estiver em desenvolvimento, usa o caminho atual
+        # No nosso caso, como src/utils.py está dentro de src/, precisamos subir um nível
+        # mas como rodamos o main.py da raiz, o "." funciona se o path for "assets/..."
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 class Particle:
     def __init__(self, x, y, color):
