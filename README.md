@@ -83,4 +83,4 @@ python main.py
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
 ---
-Desenvolvido com ❤️ por [Douglas Oliveira](https://github.com/gleissondouglas)
+Desenvolvido com ❤️ por [Gleisson Douglas](https://github.com/gleissondouglas)
