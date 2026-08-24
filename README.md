@@ -1,4 +1,4 @@
-# 🏓 Hand Pong - AI Powered Game
+# 🏓 Hand Pong - Powered Game
 
 Um jogo de Pong clássico reimaginado, onde você controla as raquetes usando os movimentos das suas mãos através da webcam. Utiliza Visão Computacional de última geração para uma experiência fluida e interativa.
 
@@ -24,7 +24,7 @@ Um jogo de Pong clássico reimaginado, onde você controla as raquetes usando os
 
 ---
 
-## 📦 Instalação e Execução
+## Instalação e Execução
 
 ### 1. Pré-requisitos
 Certifique-se de ter o Python instalado. Recomenda-se o uso de um ambiente virtual.
@@ -59,7 +59,7 @@ python main.py
 
 ---
 
-## 🎮 Como Jogar
+## Como Jogar
 
 1. Ao iniciar, você estará no **Menu Principal**.
 2. Pressione **'C'** para iniciar a **Calibração**:
@@ -70,7 +70,7 @@ python main.py
 
 ---
 
-## 🛠️ Estrutura do Projeto
+## Estrutura do Projeto
 
 - `main.py`: Ponto de entrada e gerenciador do estado do jogo.
 - `src/`: Módulos do sistema (Câmera, IA, Física, UI).
