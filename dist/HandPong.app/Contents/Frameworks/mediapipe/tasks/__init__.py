@@ -1,1 +1,0 @@
-../../../Resources/mediapipe/tasks/__init__.py

@@ -18,3 +18,11 @@ ENV/
 
 # Project specific
 assets/models/*.task
+
+# PyInstaller build artifacts
+build/
+dist/
+*.spec
+
+# Antigravity AI config
+GEMINI.md
