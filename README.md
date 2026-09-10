@@ -1,7 +1,7 @@
 # 🏓 Hand Pong - Powered Game
 
 Um jogo de Pong clássico reimaginado, onde você controla as raquetes usando os movimentos das suas mãos através da webcam. Utiliza Visão Computacional de última geração para uma experiência fluida e interativa.
-
+novas atualizações estão há caminho
 ---
 
 ## Funcionalidades
