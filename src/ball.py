@@ -5,14 +5,16 @@ from .config import WHITE, CYAN, WIDTH, HEIGHT, BALL_SIZE, BALL_INITIAL_SPEED_X,
 class Ball:
     def __init__(self, hit_sound=None, effect_manager=None):
         self.rect = pygame.Rect(WIDTH // 2 - BALL_SIZE // 2, HEIGHT // 2 - BALL_SIZE // 2, BALL_SIZE, BALL_SIZE)
+        self.x = float(self.rect.x)
+        self.y = float(self.rect.y)
         self.hit_sound = hit_sound
         self.effect_manager = effect_manager
         self.trail = [] # Lista de (x, y) das posições anteriores
         self.reset_speed()
 
     def reset_speed(self):
-        self.speed_x = BALL_INITIAL_SPEED_X * random.choice((1, -1))
-        self.speed_y = BALL_INITIAL_SPEED_Y * random.choice((1, -1))
+        self.speed_x = float(BALL_INITIAL_SPEED_X * random.choice((1, -1)))
+        self.speed_y = float(BALL_INITIAL_SPEED_Y * random.choice((1, -1)))
 
     def update(self, left_paddle, right_paddle):
         # Armazena posição atual para o rastro antes de mover
@@ -20,12 +22,23 @@ class Ball:
         if len(self.trail) > BALL_TRAIL_LENGTH:
             self.trail.pop()
 
-        # Movimento
-        self.rect.x += int(self.speed_x)
-        self.rect.y += int(self.speed_y)
+        # Movimento em ponto flutuante para preservar aceleração suave
+        self.x += self.speed_x
+        self.y += self.speed_y
+        self.rect.x = int(self.x)
+        self.rect.y = int(self.y)
 
         # Colisão Topo e Baixo
-        if self.rect.top <= 0 or self.rect.bottom >= HEIGHT:
+        if self.rect.top <= 0:
+            self.rect.top = 0
+            self.y = float(self.rect.y)
+            self.speed_y *= -1
+            if self.hit_sound: self.hit_sound.play()
+            if self.effect_manager:
+                self.effect_manager.trigger_shake(3)
+        elif self.rect.bottom >= HEIGHT:
+            self.rect.bottom = HEIGHT
+            self.y = float(self.rect.y)
             self.speed_y *= -1
             if self.hit_sound: self.hit_sound.play()
             if self.effect_manager:
@@ -51,8 +64,11 @@ class Ball:
         self.speed_x *= -1
         
         # Ajusta posição para fora da raquete para evitar múltiplas colisões
-        if self.speed_x > 0: self.rect.left = paddle.rect.right
-        else: self.rect.right = paddle.rect.left
+        if self.speed_x > 0:
+            self.rect.left = paddle.rect.right
+        else:
+            self.rect.right = paddle.rect.left
+        self.x = float(self.rect.x)
         
         paddle.flash()
         
@@ -71,9 +87,10 @@ class Ball:
 
     def reset(self):
         self.rect.center = (WIDTH // 2, HEIGHT // 2)
+        self.x = float(self.rect.x)
+        self.y = float(self.rect.y)
         self.trail = [] # Limpa rastro no ponto
-        self.reset_speed()
-        self.speed_x *= -1 
+        self.reset_speed() 
 
     def draw(self, surface):
         # 1. Desenha o Rastro (Trail)

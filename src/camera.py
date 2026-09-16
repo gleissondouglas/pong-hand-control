@@ -1,3 +1,4 @@
+import sys
 import cv2
 import threading
 import time
@@ -5,30 +6,32 @@ from .config import WIDTH, HEIGHT
 
 class Camera:
     def __init__(self, camera_index=0):
-        # O diagnóstico confirmou que o índice 0 e 1 funcionam com AVFOUNDATION
+        backend = cv2.CAP_AVFOUNDATION if sys.platform == "darwin" else cv2.CAP_ANY
         print(f"Inicializando câmera no índice {camera_index}...")
-        self.cap = cv2.VideoCapture(camera_index, cv2.CAP_AVFOUNDATION)
+        self.cap = cv2.VideoCapture(camera_index, backend)
         
         if not self.cap.isOpened():
             print("Tentando índice alternativo 1...")
-            self.cap = cv2.VideoCapture(1, cv2.CAP_AVFOUNDATION)
+            self.cap = cv2.VideoCapture(1, backend)
 
         if not self.cap.isOpened():
             print("Erro Crítico: Não foi possível abrir a câmera.")
             return
 
-        # "Warm-up" mais agressivo: lê e descarta frames iniciais
+        # "Warm-up": lê e descarta frames iniciais
         for i in range(10):
             success, frame = self.cap.read()
             if success and frame is not None:
                 print(f"Câmera pronta e enviando frames (Warm-up {i+1}/10)")
             else:
                 print("Aguardando sinal da câmera...")
-            cv2.waitKey(50) 
+            time.sleep(0.05)
         
     def get_frame(self):
+        if not self.cap.isOpened():
+            return None
         success, frame = self.cap.read()
-        if not success:
+        if not success or frame is None:
             return None
         
         # Inverte o frame horizontalmente para efeito de espelho (melhor para jogos)
@@ -36,7 +39,8 @@ class Camera:
         return frame
     
     def release(self):
-        self.cap.release()
+        if hasattr(self, 'cap') and self.cap.isOpened():
+            self.cap.release()
         cv2.destroyAllWindows()
 
 class CameraStream:
@@ -57,21 +61,25 @@ class CameraStream:
 
     def update(self):
         while not self.stopped:
-            frame = self.camera.get_frame()
-            if frame is not None:
-                # 1. Processa a IA no frame original (melhor precisão)
-                frame, hands = self.tracker.find_hands(frame)
-                
-                # 2. OTIMIZAÇÃO: Prepara o frame para o Pygame aqui na thread de background
-                # Redimensiona, converte para RGB e transpõe
-                frame_resized = cv2.resize(frame, (WIDTH, HEIGHT))
-                frame_rgb = cv2.cvtColor(frame_resized, cv2.COLOR_BGR2RGB)
-                frame_pygame_ready = cv2.transpose(frame_rgb)
-                
-                # Atualiza os dados de forma segura para a thread principal
-                with self.lock:
-                    self.frame = frame_pygame_ready
-                    self.hands = hands
+            try:
+                frame = self.camera.get_frame()
+                if frame is not None:
+                    # 1. Processa a IA no frame original (melhor precisão)
+                    frame, hands = self.tracker.find_hands(frame)
+                    
+                    # 2. OTIMIZAÇÃO: Prepara o frame para o Pygame aqui na thread de background
+                    # Redimensiona, converte para RGB e transpõe
+                    frame_resized = cv2.resize(frame, (WIDTH, HEIGHT))
+                    frame_rgb = cv2.cvtColor(frame_resized, cv2.COLOR_BGR2RGB)
+                    frame_pygame_ready = cv2.transpose(frame_rgb)
+                    
+                    # Atualiza os dados de forma segura para a thread principal
+                    with self.lock:
+                        self.frame = frame_pygame_ready
+                        self.hands = hands
+            except Exception as e:
+                print(f"Erro na thread de processamento de câmera: {e}")
+                time.sleep(0.05)
             
             # Pequena pausa para não sobrecarregar a CPU
             time.sleep(0.001)

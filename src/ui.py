@@ -19,23 +19,10 @@ class UI:
 
     def _create_vignette(self):
         """Cria uma superfície de escurecimento suave nas bordas."""
-        vignette = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
-        # Preenche com preto semi-transparente
-        vignette.fill((0, 0, 0, 0))
-        
-        # Desenha um gradiente radial invertido
-        for i in range(0, 100, 5):
-            alpha = int((i / 100) ** 2 * 180) # Curva quadrática para suavidade
-            # Desenha retângulos ocos das bordas para o centro
-            rect = pygame.Rect(0, 0, WIDTH, HEIGHT).inflate(-i*8, -i*6)
-            # Como inflate reduz, queremos preencher o que sobrou fora dele
-            # Mas é mais simples desenhar um overlay fixo e usar blit com opacidade
-        
-        # Versão simplificada: um gradiente nas bordas
         dark_edge = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
-        for i in range(150): # 150 pixels de borda
-            alpha = int(150 * (1 - i/150))
-            pygame.draw.rect(dark_edge, (0,0,0, alpha), (i, i, WIDTH-2*i, HEIGHT-2*i), 1)
+        for i in range(150):  # 150 pixels de borda com gradiente suave
+            alpha = int(150 * (1 - i / 150))
+            pygame.draw.rect(dark_edge, (0, 0, 0, alpha), (i, i, WIDTH - 2 * i, HEIGHT - 2 * i), 1)
         return dark_edge
 
     def draw_vignette(self, surface):

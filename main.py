@@ -111,20 +111,25 @@ class HandPongGame:
                         self.calib_timer = self.calib_max_time
                         self.temp_y_min = 1.0
                         self.temp_y_max = 0.0
-                if event.key == pygame.K_q:
-                    self.running = False
+                if event.key == pygame.K_q or event.key == pygame.K_ESCAPE:
+                    if self.state == CALIBRATION:
+                        self.state = MENU
+                    else:
+                        self.running = False
 
     def _update(self, hands):
         self.effects.update()
+        if not hands:
+            hands = {"left": None, "right": None}
         
-        y_left_raw = hands["left"]["y"] if "left" in hands and hands["left"] else None
-        y_right_raw = hands["right"]["y"] if "right" in hands and hands["right"] else None
+        y_left_raw = hands["left"]["y"] if hands.get("left") else None
+        y_right_raw = hands["right"]["y"] if hands.get("right") else None
 
         if self.state == CALIBRATION:
             self.calib_timer -= 1
             # Coleta extremos de qualquer mão visível
             for side in ["left", "right"]:
-                if hands[side]:
+                if hands.get(side):
                     y = hands[side]["y"]
                     self.temp_y_min = min(self.temp_y_min, y)
                     self.temp_y_max = max(self.temp_y_max, y)

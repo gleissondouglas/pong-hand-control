@@ -6,14 +6,11 @@ from .config import CYAN, WHITE
 
 def resource_path(relative_path):
     """ Retorna o caminho absoluto para o recurso, funciona em dev e PyInstaller """
-    try:
-        # PyInstaller cria uma pasta temporária e armazena o caminho em _MEIPASS
+    if hasattr(sys, "_MEIPASS"):
         base_path = sys._MEIPASS
-    except Exception:
-        # Se estiver em desenvolvimento, usa o caminho atual
-        # No nosso caso, como src/utils.py está dentro de src/, precisamos subir um nível
-        # mas como rodamos o main.py da raiz, o "." funciona se o path for "assets/..."
-        base_path = os.path.abspath(".")
+    else:
+        # Diretório raiz do projeto (um nível acima de src/)
+        base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     return os.path.join(base_path, relative_path)
 
