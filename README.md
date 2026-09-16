@@ -1,10 +1,10 @@
 # 🏓 Hand Pong - Powered Game
 
-Um jogo de Pong clássico reimaginado, onde você controla as raquetes usando os movimentos das suas mãos através da webcam. Utiliza Visão Computacional de última geração para uma experiência fluida e interativa.
-
+Um jogo de Pong clássico reimaginado, onde você controla as raquetes usando os movimentos das suas mãos através da webcam. Utiliza Visão Computacional de última geração para uma experiência fluida e interativa. 
+Novas atualizações estão há caminho
 ---
 
-## ✨ Funcionalidades
+## Funcionalidades
 
 - **Controle por Gestos**: Utilize a posição vertical das suas mãos para mover as raquetes em tempo real.
 - **Threading de IA**: Processamento assíncrono do MediaPipe, garantindo que o jogo rode a 60 FPS constantes enquanto a IA trabalha em segundo plano.
@@ -14,7 +14,7 @@ Um jogo de Pong clássico reimaginado, onde você controla as raquetes usando os
 
 ---
 
-## 🚀 Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 - **Python 3.9+**
 - **Pygame**: Engine para renderização e lógica de jogo.
@@ -78,7 +78,7 @@ python main.py
 
 ---
 
-## 📄 Licença
+## Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
